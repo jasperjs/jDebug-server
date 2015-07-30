@@ -1,0 +1,13 @@
+Thumbs.db
+
+*.backup
+*.gitattributes
+
+.idea
+node_modules
+bower_components
+
+lib/**/*.js.map
+
+test
+tsconfig.json

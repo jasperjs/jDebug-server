@@ -1,0 +1,14 @@
+{
+    "compilerOptions": {
+        "sourceMap": false,
+        "declaration": false,
+        "outDir": "",
+        "target": "ES5",
+        "module": "commonjs",
+        "noEmitOnError": true
+    },
+    "files": [
+        "typed/types.d.ts",
+        "Index.ts"
+    ]
+}
