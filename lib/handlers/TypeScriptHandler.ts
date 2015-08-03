@@ -22,6 +22,11 @@ class TypeScriptHandler implements s.IJDebugFileHandler {
             var tsModifiedDate = utils.getFileModifiedDate(info.filepath);
 
             var def = utils.findDefinition(info.filepath);
+
+            if(utils.isArray(def)) {
+                def = utils.extractComponentFromArrayDefinition(def);
+            }
+
             if (def && this.isTypeSupported(def.type)) {
 
                 this.defers[info.filepath] = setInterval(()=> {

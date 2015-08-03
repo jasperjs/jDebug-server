@@ -11,6 +11,11 @@ class DefinitionHandler implements s.IJDebugFileHandler {
     fileChanged(info:w.IChangedFileInfo):boolean {
         if (this.isDefinition(info.filepath)) {
             var def = utils.findDefinition(info.filepath);
+
+            if(utils.isArray(def)) {
+                def = utils.extractComponentFromArrayDefinition(def);
+            }
+
             if (def && this.isTypeSupported(def.type)) {
                 this.server.broadcast({
                     type: s.JDebugCommandType.DEFINITIONCHANGED,

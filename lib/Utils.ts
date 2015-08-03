@@ -181,6 +181,24 @@ class Utils {
     getFileModifiedDate(filepath): Date {
         return new Date(fs.statSync(filepath).mtime);
     }
+
+    extractComponentFromArrayDefinition(def){
+        for(var elem of def){
+            if(elem.type && elem.type === 'component'){
+                return elem;
+            }
+        }
+
+        return null;
+    }
+
+    isArray(arr:any){
+        if(Array.isArray){
+            return Array.isArray(arr);
+        } else {
+            return arr instanceof Array;
+        }
+    }
 }
 
 export =
