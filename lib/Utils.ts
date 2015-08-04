@@ -182,11 +182,16 @@ class Utils {
         return new Date(fs.statSync(filepath).mtime);
     }
 
+    /* return page if component is not found */
     extractComponentFromArrayDefinition(def){
         for(var elem of def){
+            var pageElem = null;
             if(elem.type && elem.type === 'component'){
                 return elem;
+            } else if (elem.type && elem.type === 'page'){
+                pageElem  = elem;
             }
+            return pageElem;
         }
 
         return null;
