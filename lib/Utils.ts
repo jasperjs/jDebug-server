@@ -186,14 +186,10 @@ class Utils {
     extractComponentFromArrayDefinition(def){
         for(var elem of def){
             var pageElem = null;
-            if(elem.type && elem.type === 'component'){
+            if(elem.type && elem.type === 'component' || elem.type === 'page'){
                 return elem;
-            } else if (elem.type && elem.type === 'page'){
-                pageElem  = elem;
             }
-            return pageElem;
         }
-
         return null;
     }
 
