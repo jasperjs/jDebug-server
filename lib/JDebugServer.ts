@@ -1,6 +1,6 @@
 import w = require('./Watcher');
 import ws = require('ws');
-
+import utils = require('./Utils');
 
 export interface IJDebugFileHandler {
     /**
@@ -72,8 +72,12 @@ export class JDebugServer {
     private fileChanged(e:w.IWatchEvent) {
         for (var i = 0; i < this.handlers.length; i++) {
             var handler = this.handlers[i];
-            if (handler.fileChanged(e.file)) {
-                break;
+            try {
+                if (handler.fileChanged(e.file)) {
+                    break;
+                }
+            } catch (err) {
+                utils.log('error: ' + err);
             }
         }
     }
