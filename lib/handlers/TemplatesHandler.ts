@@ -17,6 +17,11 @@ class TemplatesHandler implements s.IJDebugFileHandler {
         if (this.isTemplate(info.filepath)) {
 
             var def = utils.findDefinition(info.filepath);
+
+            if(utils.isArray(def)) {
+                def = utils.extractComponentFromArrayDefinition(def);
+            }
+
             if (this.isTypeSupported(def.type) && def.templateFile) {
                 if(utils.getFilename(info.filepath).toUpperCase() === def.templateFile.toUpperCase()){
                     var data:ITemplateInfo = {
