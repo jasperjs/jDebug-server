@@ -1,6 +1,6 @@
 {
   "name": "jdebug-server",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "jDebug server watch file changes and propagate events to the clients via websockets protocol",
   "main": "index.js",
   "scripts": {

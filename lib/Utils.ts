@@ -52,7 +52,7 @@ class Utils {
      *  C:\folder\file.exe --> C:\folder\
      */
     getPath(filepath:string):string {
-        return filepath.substring(0, filepath.lastIndexOf('\\'));
+        return path.dirname(filepath);
     }
 
     getFileExtension(filepath:string):string {
