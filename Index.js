@@ -27,6 +27,7 @@ function jDebugServer(app, server) {
         ];
         handlers.forEach(function (i) { return jDebugServer.addHandler(i); });
         utils.log('server started at: ' + jDebugUrl);
+        return jDebugServer;
     }
     app.jDebugServer = createServer;
 }

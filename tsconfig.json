@@ -9,6 +9,14 @@
     },
     "files": [
         "typed/types.d.ts",
-        "Index.ts"
+        "Index.ts",
+        "lib/JDebugServer.ts",
+        "lib/Utils.ts",
+        "lib/Watcher.ts",
+        "lib/handlers/CssHandler.ts",
+        "lib/handlers/DefinitionHandler.ts",
+        "lib/handlers/TemplatesHandler.ts",
+        "lib/handlers/TypeScriptHandler.ts",
+        "lib/ide/IIDEConnector.ts"
     ]
 }

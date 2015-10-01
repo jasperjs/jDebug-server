@@ -1,7 +1,7 @@
 import jServer = require('./lib/JDebugServer');
 import utils = require('./lib/Utils');
-// handlers:
 
+// handlers:
 import tsHandler = require('./lib/handlers/TypeScriptHandler');
 import cssHandler = require('./lib/handlers/CssHandler');
 import templatesHandler = require('./lib/handlers/TemplatesHandler');
@@ -32,6 +32,8 @@ function jDebugServer(app, server) {
         handlers.forEach(i => jDebugServer.addHandler(i));
 
         utils.log('server started at: ' + jDebugUrl);
+
+        return jDebugServer;
     }
 
     app.jDebugServer = createServer;

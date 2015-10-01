@@ -22,7 +22,7 @@ module.exports = function (grunt) {
                 generateTsConfig: true
             },
             base: {
-                src: ['*.ts']
+                src: ['*.ts', 'lib/**/*.ts']
             }
         }
     });

@@ -15,3 +15,7 @@ declare module "sane"{
 declare module "path"{
     export = a;
 }
+
+declare module "shelljs"{
+    export = a;
+}

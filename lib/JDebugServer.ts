@@ -1,6 +1,7 @@
 import w = require('./Watcher');
 import ws = require('ws');
 import utils = require('./Utils');
+import ide = require('./ide/IIDEConnector');
 
 export interface IJDebugFileHandler {
     /**
@@ -25,6 +26,9 @@ export interface IJDebugCommand {
 
 export class JDebugServer {
     private handlers:IJDebugFileHandler[] = [];
+    private ideConnectors: ide.IIDEConnector[] = [];
+    private ideConnectorId: string;
+
     private ws:any;
 
     private defers = {};
@@ -43,6 +47,20 @@ export class JDebugServer {
             path: wsUrl,
             server: server
         });
+        this.ws.on('connection', (connection) => {
+            connection.on('message', (data) => {
+                try {
+                    var message: IJdebugMessage = JSON.parse(data);
+                    this.dispatchClientMessage(message);
+                }
+                catch(e){
+                    utils.log('Error while process jDebug client message: ' + e);
+                }
+            });
+        });
+
+        this.addIDEConnector(new ide.WebStormIDEConnnector());
+        this.useIDEConnector('webstorm');
     }
 
     addHandler(handler:IJDebugFileHandler) {
@@ -66,7 +84,39 @@ export class JDebugServer {
         else {
             send();
         }
+    }
 
+    useIDEConnector(id: string){
+        this.ideConnectorId = id;
+    }
+
+    addIDEConnector(connector: ide.IIDEConnector){
+        this.ideConnectors.push(connector);
+    }
+
+    private dispatchClientMessage(message: IJdebugMessage){
+        switch(message.type){
+            case 'ide_open':
+                var connector = this.getCurrentIDEConnector();
+                if(!connector){
+                    utils.log('ide connector not found');
+                    return;
+                }
+                connector.openFile(message.data);
+                break;
+            default:
+                utils.log('unknown command type: ' + message.type);
+                break;
+        }
+    }
+
+    private getCurrentIDEConnector(): ide.IIDEConnector{
+        for (var i = 0; i < this.ideConnectors.length; i++) {
+            if(this.ideConnectors[i].id === this.ideConnectorId){
+                return this.ideConnectors[i];
+            }
+        }
+        return undefined;
     }
 
     private fileChanged(e:w.IWatchEvent) {
@@ -82,4 +132,9 @@ export class JDebugServer {
         }
     }
 
+}
+
+interface IJdebugMessage{
+    type: string;
+    data: any;
 }
