@@ -16,7 +16,10 @@ export class WebStormIDEConnnector implements IIDEConnector{
     openFile(filepath: string){
 
         var fullpath = path.join(process.cwd(), filepath);
-        var commandToExec = 'webstorm ' + fullpath + ' nosplash';
+
+        var isWin = /^win/.test(process.platform);
+        var commandToExec = isWin ? 'webstorm ' + fullpath + ' nosplash': 'open -a Webstorm ' + fullpath;
+
         var resultCode = shell.exec(commandToExec, {silent: true}).code;
         if (resultCode !== 0 && resultCode !== 6) {
             utils.log('Configure path for webstorm. Failed to exec: ' + commandToExec + '. Result code: ' + resultCode);
