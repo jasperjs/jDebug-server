@@ -22,7 +22,7 @@ module.exports = function (grunt) {
                 generateTsConfig: true
             },
             base: {
-                src: ['*.ts', 'lib/**/*.ts']
+                src: ['*.ts', 'lib/**/*.ts', 'node_modules/jasper-build/jasper-build.d.ts']
             }
         }
     });

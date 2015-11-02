@@ -11,12 +11,14 @@
         "typed/types.d.ts",
         "Index.ts",
         "lib/JDebugServer.ts",
+        "lib/ProjectBuilder.ts",
         "lib/Utils.ts",
         "lib/Watcher.ts",
         "lib/handlers/CssHandler.ts",
         "lib/handlers/DefinitionHandler.ts",
         "lib/handlers/TemplatesHandler.ts",
         "lib/handlers/TypeScriptHandler.ts",
-        "lib/ide/IIDEConnector.ts"
+        "lib/ide/IIDEConnector.ts",
+        "node_modules/jasper-build/jasper-build.d.ts"
     ]
 }

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title><%= appname %></title>
+    <base href="/" />
+
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+
+    <!-- STYLES -->
+
+	<link rel="stylesheet" href="/test/testApp/bootstrap.css"/>
+	<link rel="stylesheet" href="/test/testApp/base.css"/>
+	<link rel="stylesheet" href="/test/testApp/app/core/components/site-header/site-header.css"/>
+
+	<!-- /STYLES -->
+
+</head>
+<body ng-app="app">
+
+    <h1>Hello from jasper application</h1>
+
+    <div ng-view>
+
+    </div>
+
+    <!-- SCRIPTS -->
+
+	<script src="/test/testApp/vendor/jquery.js"></script>
+	<script src="/test/testApp/vendor/angular.js"></script>
+	<script src="/test/testApp/app/_areas.js"></script>
+	<script src="/test/testApp/app/_routes.js"></script>
+	<script src="/test/testApp/bootstrap.js"></script>
+
+	<!-- /SCRIPTS -->
+
+</body>
+</html>

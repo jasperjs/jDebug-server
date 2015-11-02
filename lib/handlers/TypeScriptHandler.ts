@@ -6,11 +6,14 @@ class TypeScriptHandler implements s.IJDebugFileHandler {
 
     private defers = {};
 
+    filemasks = ['**/*.ts'];
+    scope = s.FileHandlerScope.APP;
+
     constructor(private server:s.JDebugServer) {
 
     }
 
-    fileChanged(info:w.IChangedFileInfo):boolean {
+    fileChanged(info:w.IFileInfo):boolean {
 
         if (this.isTypeScript(info.filepath)) {
             if (this.defers[info.filepath]) {
@@ -23,7 +26,7 @@ class TypeScriptHandler implements s.IJDebugFileHandler {
 
             var def = utils.findDefinition(info.filepath);
 
-            if(utils.isArray(def)) {
+            if (utils.isArray(def)) {
                 def = utils.extractComponentFromArrayDefinition(def);
             }
 
@@ -66,12 +69,10 @@ class TypeScriptHandler implements s.IJDebugFileHandler {
             return true;
         }
 
-        // todo place logic here; this.server.broadcast(....);
-        console.log('file changed: ', info.filepath);
         return false;
     }
 
-    private isTypeSupported(type: string){
+    private isTypeSupported(type:string) {
         return type === 'component' || type === 'page';
     }
 

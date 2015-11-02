@@ -1,5 +1,21 @@
 {
-  "jDebug":{
-    "enabled": true
-  }
+  "baseCss": {
+    "bootstrap.min.css": [
+      "test/testApp/bootstrap.css"
+    ],
+    "all.min.css": [
+      "test/testApp/base.css"
+    ]
+  },
+  "baseScripts": ["test/testApp/vendor/jquery.js", "test/testApp/vendor/angular.js"],
+
+  "jDebugEnabled": true,
+
+  "startup": "test/testApp/bootstrap.js",
+  "singlePage": "test/testApp/index.html",
+  "appPath": "test/testApp/app",
+  "defaultRoutePath": "/",
+  "packageOutput": "dist",
+  "fileVersion": true,
+  "baseHref": "/"
 }

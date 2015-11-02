@@ -9,9 +9,10 @@ var http = require('http');
 var server = http.createServer(app).listen(port);
 
 // jdebug-server
-require('./Index')(app, server);
+require('./Index')(app, server, 'jasper.json');
 // static files handler
 // jdebug-server
+
 app['jDebugServer']();
 
 console.log('Server listening on port: ' + port);

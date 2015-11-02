@@ -1,0 +1,5 @@
+{
+  "templateFile": "boot-tag.html",
+  "type": "component",
+  "ctrl": "spa.boot.components.BootTag"
+}

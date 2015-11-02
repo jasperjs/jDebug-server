@@ -4,11 +4,14 @@ import utils = require('../Utils');
 
 class CssHandler implements s.IJDebugFileHandler {
 
+    filemasks = ['**/*.css'];
+    scope = s.FileHandlerScope.APP;
+
     constructor(private server:s.JDebugServer) {
 
     }
 
-    fileChanged(info:w.IChangedFileInfo):boolean {
+    fileChanged(info:w.IFileInfo):boolean {
         if (this.isStyleSheet(info.filepath)) {
 
             this.server.broadcast({

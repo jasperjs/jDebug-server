@@ -9,11 +9,14 @@ interface ITemplateInfo {
 
 class TemplatesHandler implements s.IJDebugFileHandler {
 
+    filemasks = ['**/*.html'];
+    scope = s.FileHandlerScope.APP;
+
     constructor(private server:s.JDebugServer) {
 
     }
 
-    fileChanged(info:w.IChangedFileInfo):boolean {
+    fileChanged(info:w.IFileInfo):boolean {
         if (this.isTemplate(info.filepath)) {
 
             var def = utils.findDefinition(info.filepath);

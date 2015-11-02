@@ -1,14 +1,18 @@
 import s = require('../JDebugServer');
 import w = require('../Watcher');
 import utils = require('../Utils');
+import build = require('../ProjectBuilder');
 
 class DefinitionHandler implements s.IJDebugFileHandler {
 
-    constructor(private server:s.JDebugServer) {
+    filemasks = ['**/_definition.json'];
+    scope = s.FileHandlerScope.APP;
+
+    constructor(private server:s.JDebugServer, private builder: build.ProjectBuilder) {
 
     }
 
-    fileChanged(info:w.IChangedFileInfo):boolean {
+    fileChanged(info:w.IFileInfo):boolean {
         if (this.isDefinition(info.filepath)) {
             var def = utils.findDefinition(info.filepath);
 
@@ -23,6 +27,23 @@ class DefinitionHandler implements s.IJDebugFileHandler {
                 });
                 utils.log('_defintion.json change detected: '+ info.filepath);
             }
+            this.builder.rebuildAreaByFile(info.filepath);
+            return true; // intercepted
+        }
+        return false;
+    }
+
+    fileRemoved(info:w.IFileInfo):boolean {
+        if (this.isDefinition(info.filepath)) {
+            this.builder.rebuildAreaByFile(info.filepath);
+            return true; // intercepted
+        }
+        return false;
+    }
+
+    fileAdded(info:w.IFileInfo):boolean {
+        if (this.isDefinition(info.filepath)) {
+            this.builder.rebuildAreaByFile(info.filepath);
             return true; // intercepted
         }
         return false;

@@ -4,12 +4,33 @@ import utils = require('./Utils');
 import ide = require('./ide/IIDEConnector');
 
 export interface IJDebugFileHandler {
+
+    /**
+     * File mask to watch
+     */
+    filemasks: string[];
+
     /**
      * Invokes then file is changed
      * @param info      Info of changed file
      * @returns         true if file processed
      */
-    fileChanged(info:w.IChangedFileInfo): boolean;
+    fileChanged?(info:w.IFileInfo): boolean;
+
+    fileAdded?(info:w.IFileInfo): boolean;
+
+    fileRemoved?(info:w.IFileInfo): boolean;
+}
+
+export enum FileHandlerScope{
+    /**
+     *      Jasper application folder
+     */
+    APP = 1,
+    /**
+     *  Project folder
+     */
+    PROJECT = 2,
 }
 
 export enum JDebugCommandType {
@@ -25,35 +46,31 @@ export interface IJDebugCommand {
 }
 
 export class JDebugServer {
-    private handlers:IJDebugFileHandler[] = [];
-    private ideConnectors: ide.IIDEConnector[] = [];
-    private ideConnectorId: string;
+    private ideConnectors:ide.IIDEConnector[] = [];
+    private ideConnectorId:string;
 
     private ws:any;
 
     private defers = {};
     private flushPeriod = 500;
 
-    constructor(private server:any, wsUrl:string) {
-        var watcher = new w.SaneWatcher();
-        // start watching files
-        watcher.watchFiles({
-            glob: ['**/*.ts', '**/*.css', '**/*.html', '**/_definition.json'],
-            dir: 'app'
-        }, this.fileChanged.bind(this));
+    private handlers:IJDebugFileHandler[];
+
+    constructor(private server:any, wsUrl:string, private appPath:string) {
 
         // start web sockets:
         this.ws = new ws.Server({
             path: wsUrl,
             server: server
         });
+
         this.ws.on('connection', (connection) => {
             connection.on('message', (data) => {
                 try {
-                    var message: IJdebugMessage = JSON.parse(data);
+                    var message:IJdebugMessage = JSON.parse(data);
                     this.dispatchClientMessage(message);
                 }
-                catch(e){
+                catch (e) {
                     utils.log('Error while process jDebug client message: ' + e);
                 }
             });
@@ -63,8 +80,16 @@ export class JDebugServer {
         this.useIDEConnector('webstorm');
     }
 
-    addHandler(handler:IJDebugFileHandler) {
-        this.handlers.push(handler);
+    watch(appHandlers:IJDebugFileHandler[]) {
+        this.handlers = appHandlers;
+
+        var watcher = new w.SaneWatcher();
+        watcher.watchFiles({
+            glob: this.getFileMasks(appHandlers),
+            dir: this.appPath
+        }, this.processEvent.bind(this));
+
+
     }
 
     broadcast(command:IJDebugCommand, useDebounce:boolean = false) {
@@ -86,19 +111,25 @@ export class JDebugServer {
         }
     }
 
-    useIDEConnector(id: string){
+    useIDEConnector(id:string) {
         this.ideConnectorId = id;
     }
 
-    addIDEConnector(connector: ide.IIDEConnector){
+    addIDEConnector(connector:ide.IIDEConnector) {
         this.ideConnectors.push(connector);
     }
 
-    private dispatchClientMessage(message: IJdebugMessage){
-        switch(message.type){
+    private getFileMasks(handlers:IJDebugFileHandler[]) {
+        var all = [];
+        handlers.forEach(h=>all = all.concat(h.filemasks));
+        return all;
+    }
+
+    private dispatchClientMessage(message:IJdebugMessage) {
+        switch (message.type) {
             case 'ide_open':
                 var connector = this.getCurrentIDEConnector();
-                if(!connector){
+                if (!connector) {
                     utils.log('ide connector not found');
                     return;
                 }
@@ -110,21 +141,34 @@ export class JDebugServer {
         }
     }
 
-    private getCurrentIDEConnector(): ide.IIDEConnector{
+    private getCurrentIDEConnector():ide.IIDEConnector {
         for (var i = 0; i < this.ideConnectors.length; i++) {
-            if(this.ideConnectors[i].id === this.ideConnectorId){
+            if (this.ideConnectors[i].id === this.ideConnectorId) {
                 return this.ideConnectors[i];
             }
         }
         return undefined;
     }
 
-    private fileChanged(e:w.IWatchEvent) {
+    private processEvent(e:w.IWatchEvent) {
+
         for (var i = 0; i < this.handlers.length; i++) {
             var handler = this.handlers[i];
             try {
-                if (handler.fileChanged(e.file)) {
-                    break;
+                if (e.type === w.WatchEventType.CHANGED
+                    && handler.fileChanged
+                    && handler.fileChanged(e.file)) {
+                    return;
+                }
+                else if (e.type === w.WatchEventType.REMOVED
+                    && handler.fileRemoved
+                    && handler.fileRemoved(e.file)) {
+                    return;
+                }
+                else if (e.type === w.WatchEventType.ADDED
+                    && handler.fileAdded
+                    && handler.fileAdded(e.file)) {
+                    return;
                 }
             } catch (err) {
                 utils.log('error: ' + err);
@@ -134,7 +178,7 @@ export class JDebugServer {
 
 }
 
-interface IJdebugMessage{
+interface IJdebugMessage {
     type: string;
     data: any;
 }

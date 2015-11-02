@@ -16,7 +16,7 @@ export interface IWatchOptions {
 /**
  * Information of file change
  */
-export interface IChangedFileInfo {
+export interface IFileInfo {
     filepath: string;
 }
 
@@ -29,7 +29,7 @@ export enum WatchEventType{
 
 export interface IWatchEvent{
     type:WatchEventType;
-    file: IChangedFileInfo;
+    file: IFileInfo;
 }
 
 export interface IWatcher {
@@ -50,6 +50,16 @@ export class SaneWatcher implements IWatcher {
                 }
             });
         });
+
+        watcher.on('add', (filepath, root, stat) => {
+            cb({
+                type: WatchEventType.ADDED,
+                file: {
+                    filepath: path.join(options.dir, filepath)
+                }
+            });
+        });
+
     }
 
 }
